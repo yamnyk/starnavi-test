@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from './Preloader.module.scss'
+import styles from './Preloader.module.css'
 
 const Preloader = ({size = 'small'}) => {
   return (

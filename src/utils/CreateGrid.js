@@ -7,9 +7,10 @@ export const createGrid = (size,
     (row, rowInd) => Array.from(
       Array(size),
       (cell, cellInd) => {
-        template.x = cell;
-        template.y = row;
-        return template
+        cell = {...template};
+        template.x = cellInd;
+        template.y = rowInd;
+        return cell
       }
     )
   )

@@ -1,0 +1,43 @@
+@import "../../colors.css";
+
+.Game_Container {
+  box-sizing: border-box;
+  width: calc(100% / 2 - 40px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.Message {
+  font-size: 18px;
+  margin: 0;
+}
+
+.GridRow {
+  display: flex;
+}
+
+.GridCell {
+  width: 50px;
+  height: 50px;
+  box-sizing: border-box;
+  border: 1px solid var(--dark)
+}
+
+.CELL_DEFAULT {
+  background-color: var(--light);
+}
+
+.CELL_HIGHLIGHTED {
+  background-color: var(--highlighted);
+}
+
+.CELL_PICKED_PLAYER {
+  background-color: var(--pickedPlayer);
+}
+
+.CELL_PICKED_COMPUTER {
+  background-color: var(--pickedComputer);
+}

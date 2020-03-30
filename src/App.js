@@ -51,7 +51,8 @@ const App = () => {
     
     const changeCellInterval = setInterval(() => {
       const newGrid = [...grid],
-        pickedItem = randomItemFromCollection(newGrid, (r) => (r.filter(c => c.status === CELL_DEFAULT)));
+        pickedItem = randomItemFromCollection(newGrid);
+      
       if (pickedItem) {
         newGrid[pickedItem.y] = [...newGrid[pickedItem.y]];
         

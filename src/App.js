@@ -1,12 +1,11 @@
 import React, {useEffect, useReducer} from 'react';
-import {initialState, reducer, setActiveMode, setGrid, setModes, setPlayer} from "./utils/reducer";
-import Preloader from "./components/Preloader/Preloader";
+import {initialState, reducer, setActiveMode, setGrid, setModes, setPlayer, setWinner} from "./utils/reducer";
 import GameField from "./components/GameField/GameField";
-
-import styles from './App.module.css';
 import {createGrid} from "./utils/CreateGrid";
 import {CELL_DEFAULT, CELL_HIGHLIGHTED} from "./utils/CellsStatuses";
-import {randomIntInRange} from "./utils/RandomIntInRange";
+import {randomItemFromCollection} from "./utils/RandomIntInRange";
+
+import styles from './App.module.css';
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState),
@@ -35,28 +34,37 @@ const App = () => {
       createGrid(modes[target.value].field, {status: CELL_DEFAULT})
     ))
   };
+  
   const playerNameHandler = ({target}) => {
     dispatch(setPlayer(target.value));
   };
+  
+  const displayWinner = () => {
+    dispatch(setWinner(player));
+  };
+  
   const settingsSubmitHandler = (e) => {
     e.preventDefault();
-    if(!activeMode || !player) return;
+    if (!activeMode || !player) return;
     
     [...e.target.children].forEach(i => i.disabled = true);
     
-    setInterval(() => {
-      const y = randomIntInRange(0,activeMode.field),
-        x = randomIntInRange(0, activeMode.field),
-        newGrid = [...grid];
-      newGrid[y] = [...newGrid[y]];
-      
-      newGrid[y][x].status = CELL_HIGHLIGHTED;
-      
-      dispatch(
-        setGrid(
-          newGrid
+    const changeCellInterval = setInterval(() => {
+      const newGrid = [...grid],
+        pickedItem = randomItemFromCollection(newGrid, (r) => (r.filter(c => c.status === CELL_DEFAULT)));
+      if (pickedItem) {
+        newGrid[pickedItem.y] = [...newGrid[pickedItem.y]];
+        
+        pickedItem.status = CELL_HIGHLIGHTED;
+        dispatch(
+          setGrid(
+            newGrid
+          )
         )
-      )
+      } else {
+        displayWinner();
+        clearInterval(changeCellInterval);
+      }
     }, activeMode.delay);
   };
   
@@ -74,9 +82,13 @@ const App = () => {
         <input type="submit" value={"PLAY"}/>
       
       </form>
-      
+      {
+        winner
+          ? <p>Winner is - {winner}</p>
+          : null
+      }
       <GameField grid={grid} mode={activeMode}/>
-      
+    
     </div>
   );
 };

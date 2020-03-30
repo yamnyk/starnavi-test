@@ -12,7 +12,6 @@ const GameField = ({grid, mode}) => {
             <div key={y} className={styles.GridRow}>
               {
                 r.map((c,x) => {
-                  console.log(c);
                   return <div key={x} className={[styles.GridCell, styles[c.status]].join(' ')} />
                 })
               }

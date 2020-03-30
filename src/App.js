@@ -41,6 +41,7 @@ const App = () => {
   
   const displayWinner = () => {
     dispatch(setWinner(player));
+    
   };
   
   const settingsSubmitHandler = (e) => {
@@ -57,13 +58,10 @@ const App = () => {
         newGrid[pickedItem.y] = [...newGrid[pickedItem.y]];
         
         pickedItem.status = CELL_HIGHLIGHTED;
-        dispatch(
-          setGrid(
-            newGrid
-          )
-        )
+        dispatch(setGrid(newGrid));
       } else {
         displayWinner();
+        [...e.target.children].forEach(i => i.disabled = false);
         clearInterval(changeCellInterval);
       }
     }, activeMode.delay);

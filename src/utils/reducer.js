@@ -5,6 +5,7 @@ const SET_ACTIVE_MODE = 'SET_ACTIVE_MODE';
 const SET_PLAYER = 'SET_PLAYER';
 const SET_WINNER = 'SET_WINNER';
 const SET_MESSAGE = 'SET_MESSAGE';
+const SET_SCORE = 'SET_SCORE';
 
 export const initialState = {
   grid: null,
@@ -13,7 +14,11 @@ export const initialState = {
   activeMode: null,
   player: null,
   winner: null,
-  message: ''
+  message: '',
+  score: {
+    player: 0,
+    computer: 0
+  }
 };
 
 export const reducer = (state, {type, payload}) => {
@@ -53,6 +58,11 @@ export const reducer = (state, {type, payload}) => {
         ...state,
         message: payload
       };
+    case SET_SCORE:
+      return {
+        ...state,
+        score: payload
+      };
     default:
       console.error(`Wrong action - ${type}`);
       return state;
@@ -91,5 +101,10 @@ export const setWinner = payload => ({
 
 export const setMessage = payload => ({
   type: SET_MESSAGE,
+  payload
+});
+
+export const setScore = payload => ({
+  type: SET_SCORE,
   payload
 });

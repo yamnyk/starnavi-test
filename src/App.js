@@ -18,7 +18,7 @@ import styles from './App.module.css';
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState),
-    {grid, activeCell, modes, activeMode, player, winner, message} = state,
+    {grid, activeCell, modes, activeMode, player, winner, message, score} = state,
     api = "https://starnavi-frontend-test-task.herokuapp.com";
   
   useEffect(() => {
@@ -49,8 +49,13 @@ const App = () => {
   };
   
   const displayWinner = () => {
-    dispatch(setWinner(player));
-    
+    dispatch(setWinner(score.user > score.computer ? player : 'Computer'));
+  };
+  
+  const isOver = () => {
+    const halfScore = Math.floor(Math.pow(activeMode.field, 2) / 2);
+    return score.player > halfScore
+    || score.computer > halfScore
   };
   
   const settingsSubmitHandler = (e) => {
@@ -72,7 +77,9 @@ const App = () => {
         pickedItem.status = CELL_HIGHLIGHTED;
         dispatch(setActiveCell(pickedItem));
         dispatch(setGrid(newGrid));
-      } else {
+      }
+      
+      if (isOver()) {
         displayWinner();
         [...target.children].forEach(i => i.disabled = false);
         clearInterval(changeCellInterval);
@@ -100,7 +107,7 @@ const App = () => {
           ? <p>{message}</p>
           : null
       }
-      <GameField grid={grid} mode={activeMode} activeCell={activeCell} dispatch={dispatch}/>
+      <GameField grid={grid} mode={activeMode} activeCell={activeCell} score={{...score}} dispatch={dispatch}/>
     
     </div>
   );

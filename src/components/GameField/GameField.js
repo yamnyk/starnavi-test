@@ -2,11 +2,13 @@ import React from 'react';
 
 import styles from './GameField.module.css'
 import {CELL_PICK_PLAYER} from "../../utils/CellsStatuses";
+import {setScore} from "../../utils/reducer";
 
-const GameField = ({grid, activeCell, mode}) => {
+const GameField = ({grid, activeCell, mode, score, dispatch}) => {
   const activeClickHandler = (cell) => {
     cell.status = CELL_PICK_PLAYER;
-    console.log(cell);
+    score.player++;
+    dispatch(setScore({...score, player: score.player}))
   };
   
   return (

@@ -1,15 +1,19 @@
 const SET_GRID = 'SET_GRID';
+const SET_ACTIVE_CELL = 'SET_ACTIVE_CELL';
 const SET_MODES = 'SET_MODES';
 const SET_ACTIVE_MODE = 'SET_ACTIVE_MODE';
 const SET_PLAYER = 'SET_PLAYER';
 const SET_WINNER = 'SET_WINNER';
+const SET_MESSAGE = 'SET_MESSAGE';
 
 export const initialState = {
   grid: null,
+  activeCell: null,
   modes: null,
   activeMode: null,
   player: null,
-  winner: null
+  winner: null,
+  message: ''
 };
 
 export const reducer = (state, {type, payload}) => {
@@ -18,6 +22,11 @@ export const reducer = (state, {type, payload}) => {
       return {
         ...state,
         grid: payload
+      };
+    case SET_ACTIVE_CELL:
+      return {
+        ...state,
+        activeCell: payload
       };
     case SET_MODES:
       return {
@@ -39,11 +48,21 @@ export const reducer = (state, {type, payload}) => {
         ...state,
         winner: payload
       };
+    case SET_MESSAGE:
+      return {
+        ...state,
+        message: payload
+      };
     default:
       console.error(`Wrong action - ${type}`);
       return state;
   }
 };
+
+export const setActiveCell = payload => ({
+  type: SET_ACTIVE_CELL,
+  payload
+});
 
 export const setGrid = payload => ({
   type: SET_GRID,
@@ -67,5 +86,10 @@ export const setPlayer = payload => ({
 
 export const setWinner = payload => ({
   type: SET_WINNER,
+  payload
+});
+
+export const setMessage = payload => ({
+  type: SET_MESSAGE,
   payload
 });

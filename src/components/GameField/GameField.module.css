@@ -34,10 +34,10 @@
   background-color: var(--highlighted);
 }
 
-.CELL_PICKED_PLAYER {
+.CELL_PICK_PLAYER {
   background-color: var(--pickedPlayer);
 }
 
-.CELL_PICKED_COMPUTER {
+.CELL_PICK_COMPUTER {
   background-color: var(--pickedComputer);
 }

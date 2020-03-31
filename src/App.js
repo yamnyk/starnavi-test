@@ -1,5 +1,14 @@
 import React, {useEffect, useReducer} from 'react';
-import {initialState, reducer, setActiveMode, setGrid, setModes, setPlayer, setWinner} from "./utils/reducer";
+import {
+  initialState,
+  reducer, setActiveCell,
+  setActiveMode,
+  setGrid,
+  setMessage,
+  setModes,
+  setPlayer,
+  setWinner
+} from "./utils/reducer";
 import GameField from "./components/GameField/GameField";
 import {createGrid} from "./utils/CreateGrid";
 import {CELL_DEFAULT, CELL_HIGHLIGHTED} from "./utils/CellsStatuses";
@@ -9,7 +18,7 @@ import styles from './App.module.css';
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState),
-    {grid, modes, activeMode, player, winner} = state,
+    {grid, activeCell, modes, activeMode, player, winner, message} = state,
     api = "https://starnavi-frontend-test-task.herokuapp.com";
   
   useEffect(() => {
@@ -46,11 +55,14 @@ const App = () => {
   
   const settingsSubmitHandler = (e) => {
     e.preventDefault();
-    if (!activeMode || !player) return;
+    if (!activeMode || !player) {
+      dispatch(setMessage('Something went wrong! Chose the mode and enter your name.'));
+      return;
+    }
     
     [...e.target.children].forEach(i => i.disabled = true);
     
-    const changeCellInterval = setInterval(() => {
+    const changeCellInterval = setInterval((target) => {
       const newGrid = [...grid],
         pickedItem = randomItemFromCollection(newGrid);
       
@@ -58,13 +70,14 @@ const App = () => {
         newGrid[pickedItem.y] = [...newGrid[pickedItem.y]];
         
         pickedItem.status = CELL_HIGHLIGHTED;
+        dispatch(setActiveCell(pickedItem));
         dispatch(setGrid(newGrid));
       } else {
         displayWinner();
-        [...e.target.children].forEach(i => i.disabled = false);
+        [...target.children].forEach(i => i.disabled = false);
         clearInterval(changeCellInterval);
       }
-    }, activeMode.delay);
+    }, activeMode.delay, e.target);
   };
   
   return (
@@ -72,9 +85,10 @@ const App = () => {
       <form onSubmit={settingsSubmitHandler}>
         <select name="gameMode" id="gameMode" defaultValue={activeMode || 'def'} onChange={modeChangeHandler}>
           <option hidden disabled value={"def"}>Pick game mode</option>
-          {modes
-            ? Object.keys(modes).map((m, ind) => <option key={ind} value={m}>{modes[m].getName()}</option>)
-            : null
+          {
+            modes
+              ? Object.keys(modes).map((m, ind) => <option key={ind} value={m}>{modes[m].getName()}</option>)
+              : null
           }
         </select>
         <input type="text" placeholder={"Enter your name"} onChange={playerNameHandler}/>
@@ -82,11 +96,11 @@ const App = () => {
       
       </form>
       {
-        winner
-          ? <p>Winner is - {winner}</p>
+        message
+          ? <p>{message}</p>
           : null
       }
-      <GameField grid={grid} mode={activeMode}/>
+      <GameField grid={grid} mode={activeMode} activeCell={activeCell} dispatch={dispatch}/>
     
     </div>
   );

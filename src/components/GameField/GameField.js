@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './GameField.module.css'
 import {CELL_PICK_PLAYER} from "../../utils/CellsStatuses";
-import {updateScoreAndGrid} from "../../utils/reducer";
+import {setGrid, updateScoreAndGrid} from "../../utils/reducer";
 
 const GameField = ({grid, activeCell, score, dispatch}) => {
   const activeClickHandler = (cell) => {
@@ -12,10 +12,7 @@ const GameField = ({grid, activeCell, score, dispatch}) => {
     newGrid[cell.y][cell.x].status = CELL_PICK_PLAYER;
     newScore.player++;
     
-    dispatch(updateScoreAndGrid({
-      score: newScore,
-      grid: newGrid
-    }))
+    dispatch(setGrid(newGrid))
   };
   
   const clickOnCell = (cell) => {

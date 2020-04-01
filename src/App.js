@@ -11,7 +11,7 @@ import styles from './App.module.css';
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState),
-    {gameStatus, grid, activeCell, modes, activeMode, player, winner, message, score} = state,
+    {grid, activeCell, modes, message, score} = state,
     api = "https://starnavi-frontend-test-task.herokuapp.com";
   
   useEffect(() => {
@@ -36,7 +36,7 @@ const App = () => {
   
   return (
     <div className={styles.Container}>
-      <SettingsBar {...{gameStatus, grid, modes, player, score, activeMode, dispatch}}/>
+      <SettingsBar {...{...state, dispatch}}/>
       {
         message && <p>{message}</p>
       }

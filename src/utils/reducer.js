@@ -9,7 +9,6 @@ const SET_PLAYER = 'SET_PLAYER';
 const SET_WINNER = 'SET_WINNER';
 const SET_MESSAGE = 'SET_MESSAGE';
 const SET_SCORE = 'SET_SCORE';
-const UPDATE_SCORE_AND_GRID = 'SET_SCORE_AND_GRID';
 const UPDATE_GRID_AND_ACTIVE_CELL = 'UPDATE_GRID_AND_ACTIVE_CELL';
 
 export const initialState = {
@@ -21,10 +20,6 @@ export const initialState = {
   player: null,
   winner: null,
   message: '',
-  score: {
-    player: 0,
-    computer: 0
-  }
 };
 
 export const reducer = (state, {type, payload}) => {
@@ -68,17 +63,6 @@ export const reducer = (state, {type, payload}) => {
       return {
         ...state,
         message: payload
-      };
-    case SET_SCORE:
-      return {
-        ...state,
-        score: payload
-      };
-    case UPDATE_SCORE_AND_GRID:
-      return {
-        ...state,
-        score: payload.score,
-        grid: payload.grid,
       };
     case UPDATE_GRID_AND_ACTIVE_CELL:
       return  {
@@ -132,11 +116,6 @@ export const setMessage = payload => ({
 
 export const setScore = payload => ({
   type: SET_SCORE,
-  payload
-});
-
-export const updateScoreAndGrid = payload => ({
-  type: UPDATE_SCORE_AND_GRID,
   payload
 });
 

@@ -8,7 +8,7 @@ import {
   setWinner,
   toggleGameStatus, updateGridAndActiveCell
 } from "../../utils/reducer";
-import {CELL_DEFAULT, CELL_HIGHLIGHTED} from "../../utils/CellsStatuses";
+import {CELL_DEFAULT, CELL_HIGHLIGHTED, CELL_PICK_PLAYER} from "../../utils/CellsStatuses";
 import {createGrid} from "../../utils/CreateGrid";
 import {GAME_PLAY} from "../../utils/GameStatuses";
 
@@ -29,7 +29,7 @@ const randomItemFromCollection = (collection, checkingRule) => {
   return pickedItem;
 };
 
-const SettingsBar = ({gameStatus, grid, activeMode, modes, score, player, dispatch}) => {
+const SettingsBar = ({gameStatus, grid, activeMode, modes, player, dispatch}) => {
   const modeChangeHandler = ({target}) => {
     dispatch(setActiveMode({...modes[target.value]}));
     dispatch(setGrid(
@@ -38,13 +38,18 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, score, player, dispat
   };
   
   const displayWinner = () => {
-    dispatch(setWinner(score.user > score.computer ? player : 'Computer'));
+  
   };
   
   const isOver = () => {
-    const halfScore = Math.floor(Math.pow(activeMode.field, 2) / 2);
-    return score.player > halfScore
-      || score.computer > halfScore
+    let computerScore = 0,
+      playerScore = 0;
+    grid.forEach(cell => {
+      if(cell.status === CELL_PICK_PLAYER) {
+        playerScore++;
+      }
+    });
+    return playerScore > Math.floor(Math.pow(activeMode.field, 2) / 2)
   };
   
   const settingsSubmitHandler = (e) => {
@@ -56,7 +61,7 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, score, player, dispat
     
     dispatch(toggleGameStatus());
     
-    const changeCellInterval = setInterval((target) => {
+    let changeCellInterval = setTimeout(function run (target) {
       const newGrid = [...grid],
         pickedItem = randomItemFromCollection(newGrid);
       
@@ -71,10 +76,11 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, score, player, dispat
       }
       
       if (isOver()) {
-        displayWinner();
-        dispatch(toggleGameStatus());
         clearInterval(changeCellInterval);
+        dispatch(toggleGameStatus());
+        displayWinner();
       }
+      changeCellInterval = setTimeout(run, activeMode.delay, target);
     }, activeMode.delay, e.target);
   };
   

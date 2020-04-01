@@ -4,13 +4,11 @@ import styles from './GameField.module.css'
 import {CELL_PICK_PLAYER} from "../../utils/CellsStatuses";
 import {setGrid} from "../../utils/reducer";
 
-const GameField = ({grid, activeCell, score, dispatch}) => {
+const GameField = ({grid, activeCell, dispatch}) => {
   const activeClickHandler = (cell) => {
-    const newGrid = [...grid],
-      newScore = {...score};
+    const newGrid = [...grid];
     newGrid[cell.y] = [...newGrid[cell.y]];
     newGrid[cell.y][cell.x].status = CELL_PICK_PLAYER;
-    newScore.player++;
     
     dispatch(setGrid(newGrid))
   };

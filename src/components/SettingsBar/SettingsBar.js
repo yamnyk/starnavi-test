@@ -1,13 +1,11 @@
 import React from 'react';
 import {
   setActiveMode,
-  setGrid,
   setMessage,
   setPlayer,
   toggleGameStatus, updateGridAndActiveCell
 } from "../../utils/reducer";
-import {CELL_DEFAULT, CELL_HIGHLIGHTED, CELL_PICK_PLAYER} from "../../utils/CellsStatuses";
-import {createGrid} from "../../utils/CreateGrid";
+import {CELL_DEFAULT, CELL_HIGHLIGHTED, CELL_PICK_COMPUTER, CELL_PICK_PLAYER} from "../../utils/CellsStatuses";
 import {GAME_PLAY} from "../../utils/GameStatuses";
 
 const randomItemFromCollection = (collection, checkingRule) => {
@@ -27,25 +25,26 @@ const randomItemFromCollection = (collection, checkingRule) => {
   return pickedItem;
 };
 
-const SettingsBar = ({gameStatus, grid, activeCell, activeMode, modes, player, dispatch}) => {
+const SettingsBar = ({gameStatus, grid, activeMode, modes, player, dispatch}) => {
   const modeChangeHandler = ({target}) => {
     dispatch(setActiveMode({...modes[target.value]}));
-    dispatch(setGrid(
-      createGrid(modes[target.value].field, {status: CELL_DEFAULT})
-    ))
   };
   
-  const isOver = () => {
+  const getWinner = () => {
     let computerScore = 0,
-      playerScore = 0;
+      playerScore = 0,
+      endCount = Math.floor(Math.pow(activeMode.field, 2) / 2);
     
-    grid.flat().forEach(cell => {
-      if (cell.status === CELL_PICK_PLAYER) {
-        playerScore++;
-      }
+    grid.flat(2).forEach(cell => {
+      playerScore += cell.status === CELL_PICK_PLAYER ? 1 : 0;
+      computerScore += cell.status === CELL_PICK_COMPUTER ? 1 : 0;
     });
     
-    return playerScore > Math.floor(Math.pow(activeMode.field, 2) / 2)
+    if (playerScore > endCount || computerScore > endCount) {
+      return playerScore > computerScore ? player : 'Computer'
+    } else {
+      return null;
+    }
   };
   
   const settingsSubmitHandler = (e) => {
@@ -57,28 +56,32 @@ const SettingsBar = ({gameStatus, grid, activeCell, activeMode, modes, player, d
     
     dispatch(toggleGameStatus());
     
-    let changeCellInterval = setTimeout(function run() {
-      if (isOver()) {
+    let changeCellInterval = setTimeout(function run(activeCell) {
+      const winner = getWinner();
+      if (winner) {
         clearTimeout(changeCellInterval);
-        dispatch(toggleGameStatus(`Winner is - player`));
+        dispatch(toggleGameStatus(`Winner is - ${winner}`));
         return;
       }
-      
-      console.log(activeCell);
       
       const newGrid = [...grid],
         pickedItem = randomItemFromCollection(newGrid);
       
+      if (activeCell && activeCell.status !== CELL_PICK_PLAYER) {
+        newGrid[activeCell.y][activeCell.x].status = CELL_PICK_COMPUTER;
+      }
+      
+      activeCell = newGrid[pickedItem.y][pickedItem.x];
+      
       if (pickedItem) {
         newGrid[pickedItem.y] = [...newGrid[pickedItem.y]];
-        
         newGrid[pickedItem.y][pickedItem.x].status = CELL_HIGHLIGHTED;
         dispatch(updateGridAndActiveCell({
           grid: newGrid,
           activeCell: newGrid[pickedItem.y][pickedItem.x]
         }));
       }
-      changeCellInterval = setTimeout(run, activeMode.delay);
+      changeCellInterval = setTimeout(() => run(activeCell), activeMode.delay);
     }, activeMode.delay);
   };
   
@@ -89,7 +92,7 @@ const SettingsBar = ({gameStatus, grid, activeCell, activeMode, modes, player, d
   const isOnGame = gameStatus === GAME_PLAY;
   
   return (
-    <form onSubmit={settingsSubmitHandler}>
+    <form onSubmit={settingsSubmitHandler} onChange={() => dispatch(setMessage(null))}>
       <select disabled={isOnGame}
               name="gameMode"
               id="gameMode"

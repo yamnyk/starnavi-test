@@ -1,4 +1,6 @@
 import {GAME_PLAY, GAME_STOP} from "./GameStatuses";
+import {createGrid} from "./CreateGrid";
+import {CELL_DEFAULT} from "./CellsStatuses";
 
 const TOGGLE_GAME_STATUS = 'TOGGLE_GAME_STATUS';
 const SET_GRID = 'SET_GRID';
@@ -6,9 +8,7 @@ const SET_ACTIVE_CELL = 'SET_ACTIVE_CELL';
 const SET_MODES = 'SET_MODES';
 const SET_ACTIVE_MODE = 'SET_ACTIVE_MODE';
 const SET_PLAYER = 'SET_PLAYER';
-const SET_WINNER = 'SET_WINNER';
 const SET_MESSAGE = 'SET_MESSAGE';
-const SET_SCORE = 'SET_SCORE';
 const UPDATE_GRID_AND_ACTIVE_CELL = 'UPDATE_GRID_AND_ACTIVE_CELL';
 
 export const initialState = {
@@ -18,7 +18,6 @@ export const initialState = {
   modes: null,
   activeMode: null,
   player: null,
-  winner: null,
   message: '',
 };
 
@@ -27,6 +26,9 @@ export const reducer = (state, {type, payload}) => {
     case TOGGLE_GAME_STATUS:
       return {
         ...state,
+        grid: state.gameStatus === GAME_PLAY
+          ? createGrid(state.activeMode.field, {status: CELL_DEFAULT})
+          : state.grid,
         gameStatus: state.gameStatus === GAME_STOP ? GAME_PLAY : GAME_STOP,
         message: payload
       };
@@ -48,17 +50,13 @@ export const reducer = (state, {type, payload}) => {
     case SET_ACTIVE_MODE:
       return {
         ...state,
-        activeMode: payload
+        activeMode: payload,
+        grid: createGrid(payload.field, {status: CELL_DEFAULT})
       };
     case SET_PLAYER:
       return {
         ...state,
         player: payload
-      };
-    case SET_WINNER:
-      return {
-        ...state,
-        winner: payload
       };
     case SET_MESSAGE:
       return {
@@ -78,11 +76,6 @@ export const reducer = (state, {type, payload}) => {
 
 export const toggleGameStatus = payload => ({
   type: TOGGLE_GAME_STATUS,
-  payload
-});
-
-export const setActiveCell = payload => ({
-  type: SET_ACTIVE_CELL,
   payload
 });
 
@@ -106,18 +99,8 @@ export const setPlayer = payload => ({
   payload
 });
 
-export const setWinner = payload => ({
-  type: SET_WINNER,
-  payload
-});
-
 export const setMessage = payload => ({
   type: SET_MESSAGE,
-  payload
-});
-
-export const setScore = payload => ({
-  type: SET_SCORE,
   payload
 });
 

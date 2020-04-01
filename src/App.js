@@ -11,7 +11,7 @@ import styles from './App.module.css';
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState),
-    {grid, activeCell, modes, message, score} = state,
+    {grid, activeCell, message} = state,
     api = "https://starnavi-frontend-test-task.herokuapp.com";
   
   useEffect(() => {
@@ -32,7 +32,7 @@ const App = () => {
     };
     
     fetchModes();
-  }, [modes, api]);
+  }, [api]);
   
   return (
     <div className={styles.Container}>
@@ -40,7 +40,7 @@ const App = () => {
       {
         message && <p>{message}</p>
       }
-      <GameField {...{score, activeCell, dispatch, grid}}/>
+      <GameField {...{activeCell, dispatch, grid}}/>
     
     </div>
   );

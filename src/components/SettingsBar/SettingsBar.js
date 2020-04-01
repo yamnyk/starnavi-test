@@ -1,11 +1,9 @@
 import React from 'react';
 import {
-  setActiveCell,
   setActiveMode,
   setGrid,
   setMessage,
   setPlayer,
-  setWinner,
   toggleGameStatus, updateGridAndActiveCell
 } from "../../utils/reducer";
 import {CELL_DEFAULT, CELL_HIGHLIGHTED, CELL_PICK_PLAYER} from "../../utils/CellsStatuses";
@@ -29,7 +27,7 @@ const randomItemFromCollection = (collection, checkingRule) => {
   return pickedItem;
 };
 
-const SettingsBar = ({gameStatus, grid, activeMode, modes, player, dispatch}) => {
+const SettingsBar = ({gameStatus, grid, activeCell, activeMode, modes, player, dispatch}) => {
   const modeChangeHandler = ({target}) => {
     dispatch(setActiveMode({...modes[target.value]}));
     dispatch(setGrid(
@@ -37,18 +35,16 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, player, dispatch}) =>
     ))
   };
   
-  const displayWinner = () => {
-  
-  };
-  
   const isOver = () => {
     let computerScore = 0,
       playerScore = 0;
-    grid.forEach(cell => {
-      if(cell.status === CELL_PICK_PLAYER) {
+    
+    grid.flat().forEach(cell => {
+      if (cell.status === CELL_PICK_PLAYER) {
         playerScore++;
       }
     });
+    
     return playerScore > Math.floor(Math.pow(activeMode.field, 2) / 2)
   };
   
@@ -61,7 +57,15 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, player, dispatch}) =>
     
     dispatch(toggleGameStatus());
     
-    let changeCellInterval = setTimeout(function run (target) {
+    let changeCellInterval = setTimeout(function run() {
+      if (isOver()) {
+        clearTimeout(changeCellInterval);
+        dispatch(toggleGameStatus(`Winner is - player`));
+        return;
+      }
+      
+      console.log(activeCell);
+      
       const newGrid = [...grid],
         pickedItem = randomItemFromCollection(newGrid);
       
@@ -74,14 +78,8 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, player, dispatch}) =>
           activeCell: newGrid[pickedItem.y][pickedItem.x]
         }));
       }
-      
-      if (isOver()) {
-        clearInterval(changeCellInterval);
-        dispatch(toggleGameStatus());
-        displayWinner();
-      }
-      changeCellInterval = setTimeout(run, activeMode.delay, target);
-    }, activeMode.delay, e.target);
+      changeCellInterval = setTimeout(run, activeMode.delay);
+    }, activeMode.delay);
   };
   
   const playerNameHandler = ({target}) => {
@@ -107,7 +105,7 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, player, dispatch}) =>
       <input disabled={isOnGame}
              type="submit"
              value={"PLAY"}/>
-  
+    
     </form>
   );
 };

@@ -27,7 +27,8 @@ export const reducer = (state, {type, payload}) => {
     case TOGGLE_GAME_STATUS:
       return {
         ...state,
-        gameStatus: state.gameStatus === GAME_STOP ? GAME_PLAY : GAME_STOP
+        gameStatus: state.gameStatus === GAME_STOP ? GAME_PLAY : GAME_STOP,
+        message: payload
       };
     case SET_GRID:
       return {
@@ -75,8 +76,9 @@ export const reducer = (state, {type, payload}) => {
   }
 };
 
-export const toggleGameStatus = () => ({
-  type: TOGGLE_GAME_STATUS
+export const toggleGameStatus = payload => ({
+  type: TOGGLE_GAME_STATUS,
+  payload
 });
 
 export const setActiveCell = payload => ({

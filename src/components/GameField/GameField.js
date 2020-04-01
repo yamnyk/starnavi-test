@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './GameField.module.css'
 import {CELL_PICK_PLAYER} from "../../utils/CellsStatuses";
-import {setGrid, updateScoreAndGrid} from "../../utils/reducer";
+import {setGrid} from "../../utils/reducer";
 
 const GameField = ({grid, activeCell, score, dispatch}) => {
   const activeClickHandler = (cell) => {

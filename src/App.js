@@ -1,113 +1,46 @@
 import React, {useEffect, useReducer} from 'react';
 import {
   initialState,
-  reducer, setActiveCell,
-  setActiveMode,
-  setGrid,
-  setMessage,
+  reducer,
   setModes,
-  setPlayer,
-  setWinner
 } from "./utils/reducer";
 import GameField from "./components/GameField/GameField";
-import {createGrid} from "./utils/CreateGrid";
-import {CELL_DEFAULT, CELL_HIGHLIGHTED} from "./utils/CellsStatuses";
-import {randomItemFromCollection} from "./utils/RandomIntInRange";
+import SettingsBar from "./components/SettingsBar/SettingsBar";
 
 import styles from './App.module.css';
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState),
-    {grid, activeCell, modes, activeMode, player, winner, message, score} = state,
+    {gameStatus, grid, activeCell, modes, activeMode, player, winner, message, score} = state,
     api = "https://starnavi-frontend-test-task.herokuapp.com";
   
   useEffect(() => {
-    fetch(`${api}/game-settings`).then(r => r.json())
-      .then(data => {
-        const modesAll = {...data};
-        for (let key in modesAll) {
-          if (modesAll.hasOwnProperty(key)) {
-            modesAll[key].getName = () => key.substring(0, key.indexOf("Mode")).toUpperCase();
-          }
+    const fetchModes = async () => {
+      const res = await fetch(`${api}/game-settings`),
+        data = await res.json();
+      
+      const modesAll = {...data};
+      for (let key in modesAll) {
+        if (modesAll.hasOwnProperty(key)) {
+          modesAll[key].getName = () => key.substring(0, key.indexOf("Mode")).toUpperCase();
         }
-        
-        dispatch(setModes(
-          modesAll
-        ))
-      });
+      }
+      
+      dispatch(setModes(
+        modesAll
+      ));
+    };
+    
+    fetchModes();
   }, [modes, api]);
-  
-  const modeChangeHandler = ({target}) => {
-    dispatch(setActiveMode({...modes[target.value]}));
-    dispatch(setGrid(
-      createGrid(modes[target.value].field, {status: CELL_DEFAULT})
-    ))
-  };
-  
-  const playerNameHandler = ({target}) => {
-    dispatch(setPlayer(target.value));
-  };
-  
-  const displayWinner = () => {
-    dispatch(setWinner(score.user > score.computer ? player : 'Computer'));
-  };
-  
-  const isOver = () => {
-    const halfScore = Math.floor(Math.pow(activeMode.field, 2) / 2);
-    return score.player > halfScore
-    || score.computer > halfScore
-  };
-  
-  const settingsSubmitHandler = (e) => {
-    e.preventDefault();
-    if (!activeMode || !player) {
-      dispatch(setMessage('Something went wrong! Chose the mode and enter your name.'));
-      return;
-    }
-    
-    [...e.target.children].forEach(i => i.disabled = true);
-    
-    const changeCellInterval = setInterval((target) => {
-      const newGrid = [...grid],
-        pickedItem = randomItemFromCollection(newGrid);
-      
-      if (pickedItem) {
-        newGrid[pickedItem.y] = [...newGrid[pickedItem.y]];
-        
-        pickedItem.status = CELL_HIGHLIGHTED;
-        dispatch(setActiveCell(pickedItem));
-        dispatch(setGrid(newGrid));
-      }
-      
-      if (isOver()) {
-        displayWinner();
-        [...target.children].forEach(i => i.disabled = false);
-        clearInterval(changeCellInterval);
-      }
-    }, activeMode.delay, e.target);
-  };
   
   return (
     <div className={styles.Container}>
-      <form onSubmit={settingsSubmitHandler}>
-        <select name="gameMode" id="gameMode" defaultValue={activeMode || 'def'} onChange={modeChangeHandler}>
-          <option hidden disabled value={"def"}>Pick game mode</option>
-          {
-            modes
-              ? Object.keys(modes).map((m, ind) => <option key={ind} value={m}>{modes[m].getName()}</option>)
-              : null
-          }
-        </select>
-        <input type="text" placeholder={"Enter your name"} onChange={playerNameHandler}/>
-        <input type="submit" value={"PLAY"}/>
-      
-      </form>
+      <SettingsBar {...{gameStatus, grid, modes, player, score, activeMode, dispatch}}/>
       {
-        message
-          ? <p>{message}</p>
-          : null
+        message && <p>{message}</p>
       }
-      <GameField grid={grid} mode={activeMode} activeCell={activeCell} score={{...score}} dispatch={dispatch}/>
+      <GameField {...{score, activeCell, dispatch, grid}}/>
     
     </div>
   );

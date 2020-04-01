@@ -1,3 +1,6 @@
+import {GAME_PLAY, GAME_STOP} from "./GameStatuses";
+
+const TOGGLE_GAME_STATUS = 'TOGGLE_GAME_STATUS';
 const SET_GRID = 'SET_GRID';
 const SET_ACTIVE_CELL = 'SET_ACTIVE_CELL';
 const SET_MODES = 'SET_MODES';
@@ -6,8 +9,11 @@ const SET_PLAYER = 'SET_PLAYER';
 const SET_WINNER = 'SET_WINNER';
 const SET_MESSAGE = 'SET_MESSAGE';
 const SET_SCORE = 'SET_SCORE';
+const UPDATE_SCORE_AND_GRID = 'SET_SCORE_AND_GRID';
+const UPDATE_GRID_AND_ACTIVE_CELL = 'UPDATE_GRID_AND_ACTIVE_CELL';
 
 export const initialState = {
+  gameStatus: GAME_STOP,
   grid: null,
   activeCell: null,
   modes: null,
@@ -23,6 +29,11 @@ export const initialState = {
 
 export const reducer = (state, {type, payload}) => {
   switch (type) {
+    case TOGGLE_GAME_STATUS:
+      return {
+        ...state,
+        gameStatus: state.gameStatus === GAME_STOP ? GAME_PLAY : GAME_STOP
+      };
     case SET_GRID:
       return {
         ...state,
@@ -63,11 +74,26 @@ export const reducer = (state, {type, payload}) => {
         ...state,
         score: payload
       };
+    case UPDATE_SCORE_AND_GRID:
+      return {
+        ...state,
+        score: payload.score,
+        grid: payload.grid,
+      };
+    case UPDATE_GRID_AND_ACTIVE_CELL:
+      return  {
+        ...state,
+        ...payload
+      };
     default:
       console.error(`Wrong action - ${type}`);
       return state;
   }
 };
+
+export const toggleGameStatus = () => ({
+  type: TOGGLE_GAME_STATUS
+});
 
 export const setActiveCell = payload => ({
   type: SET_ACTIVE_CELL,
@@ -106,5 +132,15 @@ export const setMessage = payload => ({
 
 export const setScore = payload => ({
   type: SET_SCORE,
+  payload
+});
+
+export const updateScoreAndGrid = payload => ({
+  type: UPDATE_SCORE_AND_GRID,
+  payload
+});
+
+export const updateGridAndActiveCell = payload => ({
+  type: UPDATE_GRID_AND_ACTIVE_CELL,
   payload
 });

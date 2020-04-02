@@ -1,51 +1,15 @@
-import React, {useEffect, useReducer} from 'react';
-import {
-  initialState,
-  reducer,
-  setModes,
-} from "./utils/reducer";
-import GameField from "./components/GameField/GameField";
-import SettingsBar from "./components/SettingsBar/SettingsBar";
+import React from 'react';
 
 import styles from './App.module.css';
+import Game from "./components/Game/Game";
+import Winners from "./components/Winners/Winners";
 
 const App = () => {
-  const [state, dispatch] = useReducer(reducer, initialState),
-    {grid, activeMode, activeCell, message} = state,
-    api = "https://starnavi-frontend-test-task.herokuapp.com";
-  
-  useEffect(() => {
-    const fetchModes = async () => {
-      const res = await fetch(`${api}/game-settings`),
-        data = await res.json();
-      
-      const modesAll = {...data};
-      for (let key in modesAll) {
-        if (modesAll.hasOwnProperty(key)) {
-          modesAll[key].getName = () => key.substring(0, key.indexOf("Mode")).toUpperCase();
-        }
-      }
-      
-      dispatch(setModes(
-        modesAll
-      ));
-    };
-    
-    fetchModes();
-  }, [api]);
-  
+  const apiUrl = 'https://starnavi-frontend-test-task.herokuapp.com';
   return (
     <div className={styles.Container}>
-      <div className={styles.Game}>
-        <SettingsBar {...{...state, dispatch}}/>
-        {
-          message && <p className={styles.Message}>{message}</p>
-        }
-        <GameField {...{activeCell, activeMode, dispatch, grid}}/>
-      </div>
-      <div className={styles.Winners}>
-        {/*TODO: add winners table*/}
-      </div>
+      <Game api={apiUrl}/>
+      <Winners api={apiUrl}/>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-@import "../../colors.css";
+@import "../../../../src/colors.css";
 
 .GameContainer {
   box-sizing: border-box;

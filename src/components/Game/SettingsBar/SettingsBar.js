@@ -4,9 +4,9 @@ import {
   setMessage,
   setPlayer,
   toggleGameStatus, updateGridAndActiveCell
-} from "../../utils/reducer";
-import {CELL_DEFAULT, CELL_HIGHLIGHTED, CELL_PICK_COMPUTER, CELL_PICK_PLAYER} from "../../utils/CellsStatuses";
-import {GAME_PLAY} from "../../utils/GameStatuses";
+} from "../../../utils/reducer";
+import {CELL_DEFAULT, CELL_HIGHLIGHTED, CELL_PICK_COMPUTER, CELL_PICK_PLAYER} from "../../../utils/CellsStatuses";
+import {GAME_PLAY} from "../../../utils/GameStatuses";
 
 import styles from './SettingsBar.module.css'
 

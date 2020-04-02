@@ -1,11 +1,12 @@
 import React, {useEffect, useReducer} from 'react';
 import SettingsBar from "./SettingsBar/SettingsBar";
 import GameField from "./GameField/GameField";
-import {initialState, reducer, setModes} from "../../utils/reducer";
+import {initialState, reducer, setMessage, setModes} from "../../utils/reducer";
 
 import styles from "./Game.module.css";
+import SimpleErrorHandler from "../../utils/SimpleErrorHandler";
 
-const Game = ({api}) => {
+const Game = ({api, updateWinners}) => {
   const [state, dispatch] = useReducer(reducer, initialState),
     {grid, activeMode, activeCell, message} = state;
   
@@ -26,12 +27,12 @@ const Game = ({api}) => {
       ));
     };
     
-    fetchModes();
+    fetchModes().catch(SimpleErrorHandler);
   }, [api]);
   
   return (
     <div className={styles.Game}>
-      <SettingsBar {...{...state, dispatch}}/>
+      <SettingsBar {...{...state, updateWinners, dispatch}}/>
       {
         message && <p className={styles.Message}>{message}</p>
       }

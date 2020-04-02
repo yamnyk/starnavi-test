@@ -27,7 +27,7 @@ const randomItemFromCollection = (collection, checkingRule) => {
   return pickedItem;
 };
 
-const SettingsBar = ({gameStatus, grid, activeMode, modes, player, dispatch}) => {
+const SettingsBar = ({gameStatus, grid, activeMode, modes, player, updateWinners, dispatch}) => {
   const modeChangeHandler = ({target}) => {
     dispatch(setActiveMode({...modes[target.value]}));
   };
@@ -62,7 +62,7 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, player, dispatch}) =>
     let changeCellInterval = setTimeout(function run(activeCell) {
       const winner = getWinner();
       if (winner) {
-        //TODO: send request to save winner
+        updateWinners(winner);
         clearTimeout(changeCellInterval);
         dispatch(toggleGameStatus(`Winner is - ${winner}`));
         return;

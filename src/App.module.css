@@ -1,3 +1,5 @@
+@import "colors.css";
+
 /* cyrillic */
 @font-face {
   font-family: 'Roboto';
@@ -42,6 +44,6 @@
   max-width: 1200px;
   display: flex;
   justify-content: space-between;
-  padding: 50px 0;
+  padding: 50px 20px;
   margin: 0 auto;
 }

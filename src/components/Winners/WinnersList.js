@@ -13,11 +13,13 @@ const Winner = ({winner: name, date}) => {
 const WinnersList = ({winners}) => {
   return (
     <div className={styles.Wrapper}>
-      {
-        winners
-          ? winners.map(w => <Winner key={w.id} {...w}>{w.winner}</Winner>)
-          : <Preloader/>
-      }
+      <div className={styles.List}>
+        {
+          winners
+            ? winners.map(w => <Winner key={w.id} {...w}>{w.winner}</Winner>)
+            : <Preloader/>
+        }
+      </div>
     </div>
   );
 };

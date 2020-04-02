@@ -1,7 +1,14 @@
 @import "../../colors.css";
 
 .Wrapper {
-  margin: 0 auto;
+  width: calc(100% / 2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.List {
+  width: 70%;
   height: 500px;
   overflow: hidden auto;
 }

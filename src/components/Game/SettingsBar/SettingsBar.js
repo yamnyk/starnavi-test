@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {
   setActiveMode,
   setMessage,
@@ -10,7 +10,7 @@ import {GAME_PLAY} from "../../../utils/GameStatuses";
 
 import styles from './SettingsBar.module.css'
 
-const randomItemFromCollection = (collection, checkingRule) => {
+const randomItemFromCollection = (collection) => {
   const randomIntInRange = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
@@ -42,7 +42,6 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, player, updateWinners
       computerScore += cell.status === CELL_PICK_COMPUTER ? 1 : 0;
     });
     
-    //TODO: simplify this code
     if (playerScore > endCount || computerScore > endCount) {
       return playerScore > computerScore ? player : 'Computer'
     } else {
@@ -121,7 +120,6 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, player, updateWinners
              disabled={isOnGame}
              type="submit"
              value={"PLAY"}/>
-    
     </form>
   );
 };

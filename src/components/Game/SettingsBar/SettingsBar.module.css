@@ -14,6 +14,10 @@
   background-color: var(--light);
 }
 
+.FormField:disabled {
+  opacity: 50%;
+}
+
 .FormField:focus {
   outline: none;
   box-shadow: 0 0 2px 1px var(--dark);

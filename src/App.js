@@ -7,20 +7,22 @@ import SimpleErrorHandler from "./utils/SimpleErrorHandler";
 
 function getFormatedDate(date) {
   const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'Jun',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ];
-  return `${date.getHours()}:${date.getMinutes()}; ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'Jun',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ],
+    hours = date.getHours() > 10 ? date.getHours() : `0${date.getHours()}`,
+    minutes = date.getMinutes() > 10 ? date.getMinutes() : `0${date.getMinutes()}`;
+  return `${hours}:${minutes}; ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`
 }
 
 const App = () => {

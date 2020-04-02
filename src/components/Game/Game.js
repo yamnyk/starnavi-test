@@ -1,7 +1,7 @@
 import React, {useEffect, useReducer} from 'react';
 import SettingsBar from "./SettingsBar/SettingsBar";
 import GameField from "./GameField/GameField";
-import {initialState, reducer, setMessage, setModes} from "../../utils/reducer";
+import {initialState, reducer, setModes} from "../../utils/reducer";
 
 import styles from "./Game.module.css";
 import SimpleErrorHandler from "../../utils/SimpleErrorHandler";

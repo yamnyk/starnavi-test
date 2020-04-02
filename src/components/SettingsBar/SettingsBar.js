@@ -8,6 +8,8 @@ import {
 import {CELL_DEFAULT, CELL_HIGHLIGHTED, CELL_PICK_COMPUTER, CELL_PICK_PLAYER} from "../../utils/CellsStatuses";
 import {GAME_PLAY} from "../../utils/GameStatuses";
 
+import styles from './SettingsBar.module.css'
+
 const randomItemFromCollection = (collection, checkingRule) => {
   const randomIntInRange = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -40,6 +42,7 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, player, dispatch}) =>
       computerScore += cell.status === CELL_PICK_COMPUTER ? 1 : 0;
     });
     
+    //TODO: simplify this code
     if (playerScore > endCount || computerScore > endCount) {
       return playerScore > computerScore ? player : 'Computer'
     } else {
@@ -59,6 +62,7 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, player, dispatch}) =>
     let changeCellInterval = setTimeout(function run(activeCell) {
       const winner = getWinner();
       if (winner) {
+        //TODO: send request to save winner
         clearTimeout(changeCellInterval);
         dispatch(toggleGameStatus(`Winner is - ${winner}`));
         return;
@@ -92,20 +96,29 @@ const SettingsBar = ({gameStatus, grid, activeMode, modes, player, dispatch}) =>
   const isOnGame = gameStatus === GAME_PLAY;
   
   return (
-    <form onSubmit={settingsSubmitHandler} onChange={() => dispatch(setMessage(null))}>
-      <select disabled={isOnGame}
-              name="gameMode"
-              id="gameMode"
-              defaultValue={activeMode || 'def'} onChange={modeChangeHandler}>
-        <option hidden disabled value={"def"}>Pick game mode</option>
-        {
-          modes && Object.keys(modes).map((m, ind) => <option key={ind} value={m}>{modes[m].getName()}</option>)
-        }
-      </select>
-      <input disabled={isOnGame}
+    <form className={styles.Container}
+          onSubmit={settingsSubmitHandler}
+          onChange={() => dispatch(setMessage(null))}>
+      <div className={styles.MenuPicker}>
+        <select required className={styles.FormField}
+                disabled={isOnGame}
+                name="gameMode"
+                id="gameMode"
+                defaultValue={activeMode || 'def'} onChange={modeChangeHandler}>
+          <option hidden disabled value={"def"}>Pick game mode</option>
+          {
+            modes && Object.keys(modes).map((m, ind) => <option key={ind} value={m}>{modes[m].getName()}</option>)
+          }
+        </select>
+      </div>
+      <input className={[styles.FormField].join(' ')}
+             disabled={isOnGame}
              type="text"
+             required
+             minLength={5}
              placeholder={"Enter your name"} onChange={playerNameHandler}/>
-      <input disabled={isOnGame}
+      <input className={[styles.FormField, styles.PlayBtn].join(' ')}
+             disabled={isOnGame}
              type="submit"
              value={"PLAY"}/>
     

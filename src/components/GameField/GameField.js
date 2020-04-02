@@ -4,7 +4,7 @@ import styles from './GameField.module.css'
 import {CELL_PICK_PLAYER} from "../../utils/CellsStatuses";
 import {setGrid} from "../../utils/reducer";
 
-const GameField = ({grid, activeCell, dispatch}) => {
+const GameField = ({grid, activeCell, activeMode, dispatch}) => {
   const activeClickHandler = (cell) => {
     const newGrid = [...grid];
     newGrid[cell.y] = [...newGrid[cell.y]];
@@ -24,19 +24,15 @@ const GameField = ({grid, activeCell, dispatch}) => {
   };
   
   return (
-    <div className={styles.Game_Container}>
+    <div className={styles.GameContainer}>
       {
         grid && grid.map((row, y) => (
-          <div key={y} className={styles.GridRow}>
-            {
-              row.map((cell, x) => {
-                return <div
-                  key={x}
-                  onClick={clickOnCell(cell)}
-                  className={[styles.GridCell, styles[cell.status]].join(' ')}/>
-              })
-            }
-          </div>
+          row.map((cell, x) => {
+            return <div
+              key={x}
+              onClick={clickOnCell(cell)}
+              className={[styles.GridCell, styles[`GridCell${activeMode.field}`], styles[cell.status]].join(' ')}/>
+          })
         ))
       }
     </div>

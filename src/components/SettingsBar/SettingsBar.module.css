@@ -1,0 +1,59 @@
+@import "../../colors.css";
+
+.Container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.FormField {
+  font-size: 18px;
+  color: var(--dark);
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  background-color: var(--light);
+}
+
+.FormField:focus {
+  outline: none;
+  box-shadow: 0 0 2px 1px var(--dark);
+}
+
+.MenuPicker {
+  position: relative;
+}
+
+.MenuPicker select {
+  background-color: var(--semiDark);
+  appearance: none;
+  padding-right: 40px;
+}
+
+.MenuPicker option {
+  display: inline-block;
+  background-color: var(--semiDark);
+  padding: 15px 20px;
+}
+
+.MenuPicker option::selection {
+  background-color: var(--dark);
+  color: var(--light);
+}
+
+.MenuPicker::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: calc(100% / 2 - 7px);
+  right: 16px;
+  width: 6px;
+  height: 6px;
+  border: 2px solid;
+  border-color: transparent transparent var(--dark) var(--dark);
+  transform: rotate(-45deg);
+}
+
+.PlayBtn {
+  background-color: var(--dark);
+  color: var(--light);
+}
